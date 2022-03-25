@@ -1,0 +1,56 @@
+const fs = require('fs');
+
+const words =  fs.readFileSync('./words.txt', {encoding: 'utf8'}).toString().split("\n");
+const wordsLength = words.length;
+
+const linearSearch = (word) => {
+    for(let i = 0; i < words.length; i++) {
+        if (word === words[i]) {
+            return word;
+        }
+
+    }
+    return 'Word not in words';
+}
+
+const binarySearch = (word) => {
+    let startIndex = 0;
+    let endIndex = words.length;
+    while(startIndex !== endIndex) {
+        let middleIndex = startIndex + Math.floor((endIndex - startIndex) / 2);
+
+        if (startIndex === middleIndex) {
+            if (words[endIndex] === word) {
+                return word;
+            } else {
+                break;
+            }
+        }
+
+        if (words[middleIndex] === word) {
+            return word;
+        } else if (words[middleIndex] < word) {
+            startIndex = middleIndex;
+        } else if (words[middleIndex] > word) {
+            endIndex = middleIndex;
+        } else {
+            return 'ERROR';
+        }
+    }
+    return 'word not in list';
+}
+
+const searchTenThousandTimesRandomly = (searchFunction) => {
+    for(let i=0; i<10000;i++) {
+        const randomWord = words[Math.floor(Math.random() * wordsLength)];
+        searchFunction(randomWord);
+    }
+}
+
+console.time();
+searchTenThousandTimesRandomly(linearSearch);
+console.timeEnd();
+
+console.time();
+searchTenThousandTimesRandomly(binarySearch);
+console.timeEnd();
